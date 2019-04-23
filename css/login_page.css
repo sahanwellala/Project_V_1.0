@@ -1,0 +1,18 @@
+div.login_container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: url('../resources/images/login_page.jpg');
+    background-size: cover;
+}
+
+body {
+    margin: 0px;
+}
+
+#login_container.form-group{
+    max-width: 100px;
+}
+h3{
+    font-family: 'Akbaal';
+}
