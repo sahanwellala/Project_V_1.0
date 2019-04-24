@@ -1,6 +1,27 @@
 'use strict';
 import React from 'react';
-import {render} from 'react-dom';
-import App_Container from './App_Container.jsx';
+import {BrowserRouter as Router, Route, Link} from 'react-router-dom';
+import Register_Container from "./Register_Container";
+import * as ReactDOM from "react-dom";
+import Login_Container from "./login_container";
+import Dashboard_Container from "./Dashboard_Container";
 
-render(<App_Container/>, document.getElementById('root'));
+
+// render(<Register_Container/>, document.getElementById('root'));
+
+ReactDOM.render((
+    <Router>
+        <Route path="/" exact component={Login_Container}/>
+        <Route path="/register" exact component={Register_Container}/>
+        <Route path="/home" exact component={Dashboard_Container}/>
+    </Router>
+), document.getElementById('root'));
+
+
+// ReactDOM.render((
+//     <Router>
+//         <Route path="/home" exact component={Dashboard_Container}/>
+//     </Router>
+// ), document.getElementById('container'));
+
+

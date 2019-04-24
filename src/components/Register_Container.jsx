@@ -2,6 +2,7 @@
 import React, {Component} from 'react';
 import '../../css/register_page.css';
 import "bootstrap/dist/css/bootstrap.min.css";
+import {render} from "react-dom";
 
 //Inline style variables used
 let register_style = {
@@ -173,5 +174,4 @@ export default class Register_Container extends Component {
             </div>
         </div>
     }
-
 }

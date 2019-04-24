@@ -1,0 +1,14 @@
+.navbar {
+    background: #00a65a;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-self: center;
+    overflow: hidden;
+    color: white;
+    text-align: center;
+    font-size: 20px;
+    font-family: Arial;
+    position: fixed;
+}

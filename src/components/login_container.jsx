@@ -101,10 +101,11 @@ export default class Login_Container extends Component {
                         <div>
                             <input type="submit" value="Login" className="btn btn-primary"
                                    style={login_btn_styles}/>
-
-                            <button type="button" className="btn btn-primary" value="register"
-                                    style={register_btn_styles}>Register
-                            </button>
+                            <Link to="/register">
+                                <button type="button" className="btn btn-primary" value="register"
+                                        style={register_btn_styles}>Register
+                                </button>
+                            </Link>
                         </div>
                         <button type="button" className="btn btn-link">Forgotten Your Username or Password ?</button>
                     </div>
@@ -112,6 +113,4 @@ export default class Login_Container extends Component {
             </div>
         </div>;
     }
-
-
 }
