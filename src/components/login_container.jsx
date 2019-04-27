@@ -2,7 +2,8 @@
 import React, {Component} from 'react';
 import '../../css/login_page.css';
 import "bootstrap/dist/css/bootstrap.min.css";
-import {Link} from 'react-router-dom'
+import {Link} from 'react-router-dom';
+import axios from 'axios';
 
 //Inline style variables used
 let login_style = {
@@ -61,6 +62,27 @@ export default class Login_Container extends Component {
         console.log('Test onSubmit()');
         console.log(`User Name : ${this.state.reg_fName}`);
         console.log(`Password : ${this.state.reg_pwd}`);
+
+        const newCredentials = {
+            user_IT_num: this.state.reg_IT_Num,
+            user_pwd: this.state.reg_pwd
+        };
+
+        axios.post('http://localhost:4000/users/login-check', newCredentials)
+            .then((err, res) => {
+                console.log(res);
+                if (err) {
+                    console.log(err);
+                }
+                if (res.status == 404) {
+                    alert('Invalid Username or Password !');
+                    window.location.href = 'http://localhost:1234/';
+                } else if (res.status == 200) {
+                    alert('Logged Successfully !');
+                    window.location.href = 'http://localhost:1234/home';
+                }
+            });
+
 
         this.setState({
             reg_fName: '',

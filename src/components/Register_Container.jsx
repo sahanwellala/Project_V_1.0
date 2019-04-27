@@ -2,8 +2,8 @@
 import React, {Component} from 'react';
 import '../../css/register_page.css';
 import "bootstrap/dist/css/bootstrap.min.css";
-import {render} from "react-dom";
-
+import axios from 'axios';
+import {Redirect} from "react-router-dom";
 //Inline style variables used
 let register_style = {
     width: '300px',
@@ -43,6 +43,35 @@ export default class Register_Container extends Component {
 
     onSubmit(e) {
         e.preventDefault();
+
+        const newUser = {
+            user_IT_num: this.state.reg_IT_Num,
+            user_fName: this.state.reg_fName,
+            user_lName: this.state.reg_lName,
+            user_email: this.state.reg_email,
+            user_address: this.state.reg_address,
+            user_tp: this.state.reg_tp,
+            user_pwd: this.state.reg_pwd
+        };
+
+        axios.post('http://localhost:4000/users', newUser)
+            .then(res => {
+                console.log(res);
+                alert("Successfully Registered !");
+                window.location.href = "http://localhost:1234/home";
+
+            });
+
+        this.setState({
+            reg_IT_Num: '',
+            reg_fName: '',
+            reg_lName: '',
+            reg_email: '',
+            reg_pwd: '',
+            reg_address: '',
+            reg_tp: '',
+            reg_con_pwd: ''
+        })
 
     }
 

@@ -5,6 +5,7 @@ import Register_Container from "./Register_Container";
 import * as ReactDOM from "react-dom";
 import Login_Container from "./login_container";
 import Dashboard_Container from "./Dashboard_Container";
+import Create_AdminOrInstructors_Container from "./Create_AdminOrInstructors_Container";
 
 
 // render(<Register_Container/>, document.getElementById('root'));
@@ -20,8 +21,8 @@ ReactDOM.render((
 
 // ReactDOM.render((
 //     <Router>
-//         <Route path="/home" exact component={Dashboard_Container}/>
+//         <Route path="/create-admin-ins" exact component={Create_AdminOrInstructors_Container}/>
 //     </Router>
-// ), document.getElementById('container'));
+// ), document.getElementById('main'));
 
 
