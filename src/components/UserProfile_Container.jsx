@@ -5,7 +5,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 import axios from 'axios';
 
-export default class Create_AdminOrInstructors_Container extends Component {
+export default class UserProfile_Container extends Component {
     constructor(props) {
         super(props);
         this.onfNameChange = this.onfNameChange.bind(this);
@@ -20,6 +20,7 @@ export default class Create_AdminOrInstructors_Container extends Component {
         this.onInstructorSelected = this.onInstructorSelected.bind(this);
         this.checkEmailExists = this.checkEmailExists.bind(this);
         this.checkPasswordMatches = this.checkPasswordMatches.bind(this);
+        this.getUserData = this.getUserData.bind(this);
 
         this.state = {
             fName: '',
@@ -31,8 +32,10 @@ export default class Create_AdminOrInstructors_Container extends Component {
             conPwd: '',
             accType: 'Admin',
             isEmailValid: true,
-            isPwdMatched: true
+            isPwdMatched: true,
+            userData: []
         }
+        this.getUserData();
     }
 
     onfNameChange(e) {
@@ -156,6 +159,21 @@ export default class Create_AdminOrInstructors_Container extends Component {
         })
     }
 
+    componentDidMount() {
+        let url = 'http://localhost:4000/users/' + localStorage.getItem('userID');
+        axios.get(url).then(res => {
+            console.log(res.data);
+            this.setState({
+                userData: res.data
+            })
+            console.log(this.state.resData);
+        })
+    }
+
+
+    getUserData() {
+    }
+
     render() {
         let emailValidity = () => {
             if (!this.state.isEmailValid) {
@@ -172,7 +190,7 @@ export default class Create_AdminOrInstructors_Container extends Component {
             }
         };
         return <div className="addAdminDiv" style={{marginTop: "40px"}}>
-            <center><h3>Create Admin / Instructor</h3></center>
+            <center><h3>Profile Details of {localStorage.getItem('fName') + "'"}</h3></center>
             <div className="form-group">
                 <form onSubmit={this.addInstructor}>
                     <div className="row">
@@ -265,4 +283,4 @@ export default class Create_AdminOrInstructors_Container extends Component {
         </div>
     }
 }
-ReactDOM.render(<Create_AdminOrInstructors_Container/>, document.getElementById('main'));
+ReactDOM.render(<UserProfile_Container/>, document.getElementById('main'));

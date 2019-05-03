@@ -6,6 +6,7 @@ import * as ReactDOM from "react-dom";
 import Login_Container from "./login_container";
 import Dashboard_Container from "./Dashboard_Container";
 import Create_AdminOrInstructors_Container from "./Create_AdminOrInstructors_Container";
+import UserProfile_Container from "./UserProfile_Container";
 
 
 // render(<Register_Container/>, document.getElementById('root'));
@@ -14,7 +15,10 @@ ReactDOM.render((
     <Router>
         <Route path="/" exact component={Login_Container}/>
         <Route path="/register" exact component={Register_Container}/>
-        <Route path="/home" exact component={Dashboard_Container}/>
+        {/*<Route path="/home" exact component={Dashboard_Container}/>*/}
+        <Route path="/home" exact
+               component={() => localStorage.getItem('success') === "true" ? <Dashboard_Container/> :
+                   <Login_Container/>}/>
     </Router>
 ), document.getElementById('root'));
 

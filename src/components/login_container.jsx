@@ -4,6 +4,9 @@ import '../../css/login_page.css';
 import "bootstrap/dist/css/bootstrap.min.css";
 import {Link} from 'react-router-dom';
 import axios from 'axios';
+import ls from 'local-storage'
+
+import {Redirect} from "react-router";
 
 //Inline style variables used
 let login_style = {
@@ -39,7 +42,17 @@ export default class Login_Container extends Component {
         this.onSubmit = this.onSubmit.bind(this);
         this.state = {
             login_user_name: '',
-            login_pwd: ''
+            login_pwd: '',
+            logged: false,
+            resData: {
+                success: false,
+                message: '',
+                userID: '',
+                fName: '',
+                accType: '',
+                token: '',
+                isLogged: false
+            }
         }
     }
 
@@ -47,46 +60,66 @@ export default class Login_Container extends Component {
 
     onChangeUserName(e) {
         this.setState({
-            reg_fName: e.target.value
+            login_user_name: e.target.value
         });
     }
 
     onChangePwd(e) {
         this.setState({
-            reg_pwd: e.target.value
+            login_pwd: e.target.value
         });
     }
 
     onSubmit(e) {
         e.preventDefault();
         console.log('Test onSubmit()');
-        console.log(`User Name : ${this.state.reg_fName}`);
-        console.log(`Password : ${this.state.reg_pwd}`);
+        console.log(`User Name : ${this.state.login_user_name}`);
+        console.log(`Password : ${this.state.login_pwd}`);
 
         const newCredentials = {
-            user_IT_num: this.state.reg_IT_Num,
-            user_pwd: this.state.reg_pwd
+            user_email: this.state.login_user_name,
+            user_pwd: this.state.login_pwd
         };
 
         axios.post('http://localhost:4000/users/login-check', newCredentials)
-            .then((err, res) => {
-                console.log(res);
-                if (err) {
-                    console.log(err);
-                }
-                if (res.status == 404) {
+            .then((res) => {
+                console.log(res.data);
+                let data = res.data;
+                this.setState({
+                    resData: {
+                        success: data.success,
+                        message: data.message,
+                        userID: data.userID,
+                        fName: data.fName,
+                        accType: data.accType,
+                        token: data.token,
+                        isLogged: data.isLogged
+                    }
+                });
+                console.log('state variable data : ' + this.state.resData.success + this.state.resData.accType);
+                if (!data.success) {
+
                     alert('Invalid Username or Password !');
                     window.location.href = 'http://localhost:1234/';
-                } else if (res.status == 200) {
+                } else {
+                    //Setting the logged details for identifying the user session
+                    localStorage.setItem('success', data.success);
+                    localStorage.setItem('userID', data.userID);
+                    localStorage.setItem('fName', data.fName);
+                    localStorage.setItem('accType', data.accType);
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('isLogged', data.isLogged);
+
                     alert('Logged Successfully !');
                     window.location.href = 'http://localhost:1234/home';
                 }
+
             });
 
 
         this.setState({
-            reg_fName: '',
-            reg_pwd: ''
+            login_user_name: '',
+            login_pwd: ''
         })
     }
 
@@ -99,7 +132,7 @@ export default class Login_Container extends Component {
                         <label>User Name: </label>
                         <input type="text"
                                className="form-control"
-                               value={this.state.reg_fName}
+                               value={this.state.login_user_name}
                                onChange={this.onChangeUserName}
                                required="required"
                         />
@@ -107,7 +140,7 @@ export default class Login_Container extends Component {
                         <label>Password: </label>
                         <input type="password"
                                className="form-control"
-                               value={this.state.reg_pwd}
+                               value={this.state.login_pwd}
                                onChange={this.onChangePwd}
                                required="required"
                         />

@@ -15,6 +15,11 @@ let register_btn_styles = {
     marginTop: '10px',
     width: '48%',
 };
+let login_btn_styles = {
+    marginTop: '10px',
+    width: '48%',
+    float: 'right',
+};
 
 export default class Register_Container extends Component {
     constructor(props) {
@@ -28,6 +33,9 @@ export default class Register_Container extends Component {
         this.onChangePwd = this.onChangePwd.bind(this);
         this.onChangeConPwd = this.onChangeConPwd.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
+        this.checkEmailExists = this.checkEmailExists.bind(this);
+        this.checkPasswordMatches = this.checkPasswordMatches.bind(this);
+        this.onLoginClicked = this.onLoginClicked.bind(this);
 
         this.state = {
             reg_IT_Num: '',
@@ -37,7 +45,9 @@ export default class Register_Container extends Component {
             reg_pwd: '',
             reg_address: '',
             reg_tp: '',
-            reg_con_pwd: ''
+            reg_con_pwd: '',
+            isEmailValid: true,
+            isPwdMatched: true
         }
     }
 
@@ -45,20 +55,22 @@ export default class Register_Container extends Component {
         e.preventDefault();
 
         const newUser = {
-            user_IT_num: this.state.reg_IT_Num,
-            user_fName: this.state.reg_fName,
-            user_lName: this.state.reg_lName,
-            user_email: this.state.reg_email,
-            user_address: this.state.reg_address,
-            user_tp: this.state.reg_tp,
-            user_pwd: this.state.reg_pwd
+            ITNum: this.state.reg_IT_Num,
+            fName: this.state.reg_fName,
+            lName: this.state.reg_lName,
+            email: this.state.reg_email,
+            address: this.state.reg_address,
+            tp: this.state.reg_tp,
+            pwd: this.state.reg_pwd,
+            accType: 'Student'
+
         };
 
-        axios.post('http://localhost:4000/users', newUser)
+        axios.post('http://localhost:4000/users/create-user', newUser)
             .then(res => {
                 console.log(res);
-                alert("Successfully Registered !");
-                window.location.href = "http://localhost:1234/home";
+                alert("Successfully Registered ! Please Log Into Continue");
+                window.location.href = "http://localhost:1234";
 
             });
 
@@ -123,8 +135,63 @@ export default class Register_Container extends Component {
         })
     }
 
+    //Validations
+    //Validating the Email
+    checkEmailExists() {
+        let email = {
+            email: this.state.reg_email
+        };
+        axios.post('http://localhost:4000/users/check-email', email).then(res => {
+            console.log(res.data);
+            let validity = res.data;
+            if (parseInt(validity.count) >= 1) {
+                this.setState({
+                    isEmailValid: false
+                })
+            } else {
+                this.setState({
+                    isEmailValid: true
+                })
+            }
+
+        })
+    }
+
+    //Validating the Passwords
+    checkPasswordMatches() {
+        let pwd = this.state.reg_pwd;
+        let conPwd = this.state.reg_con_pwd;
+        if (pwd === conPwd) {
+            this.setState({
+                isPwdMatched: true
+            })
+        } else {
+            this.setState({
+                isPwdMatched: false
+            })
+        }
+    }
+
+    onLoginClicked() {
+        window.location.href = "http://localhost:1234";
+    }
+
 
     render() {
+        let emailValidity = () => {
+            if (!this.state.isEmailValid) {
+                return <p style={{color: "red"}}>Already Exists Please Enter Another Email !</p>
+            } else {
+                return null
+            }
+        };
+        let passwordMatch = () => {
+            if (!this.state.isPwdMatched) {
+                return <p style={{color: "red"}}>Passwords didn't match !</p>
+            } else {
+                return null;
+            }
+        };
         return <div>
             <div className="register_container">
                 <form onSubmit={this.onSubmit}>
@@ -145,6 +212,8 @@ export default class Register_Container extends Component {
                                        value={this.state.reg_fName}
                                        onChange={this.onfNameChange}
                                        required="required"
+                                       pattern="[a-zA-Z]+"
+                                       title="Please Enter a valid Name"
                                 />
                             </div>
                             <div className="col-sm-6">
@@ -154,15 +223,20 @@ export default class Register_Container extends Component {
                                        value={this.state.reg_lName}
                                        onChange={this.onLNameChange}
                                        required="required"
+                                       pattern="[a-zA-Z]+"
+                                       title="Please Enter a valid Name"
                                 />
                             </div>
                         </div>
-                        <label>Email: </label>
+                        <label>Email: {emailValidity()}</label>
                         <input type="text"
                                className="form-control"
                                value={this.state.reg_email}
                                onChange={this.onEmailChange}
                                required="required"
+                               pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+                               title="Please Enter a Email Address"
+                               onBlur={this.checkEmailExists}
                         />
                         <label>Address: </label>
                         <input type="text-area"
@@ -177,6 +251,8 @@ export default class Register_Container extends Component {
                                value={this.state.reg_tp}
                                onChange={this.onTpChange}
                                required="required"
+                               pattern="\d{10}"
+                               title="Please Enter a Valid Phone number Eg - 0771234567"
                         />
                         <label>Password: </label>
                         <input type="password"
@@ -185,17 +261,23 @@ export default class Register_Container extends Component {
                                onChange={this.onChangePwd}
                                required="required"
                         />
-                        <label>Confirm Password: </label>
+                        <label>Confirm Password: {passwordMatch()} </label>
                         <input type="password"
                                className="form-control"
                                value={this.state.reg_con_pwd}
                                onChange={this.onChangeConPwd}
                                required="required"
+                               onBlur={this.checkPasswordMatches}
                         />
 
                         <div>
                             <button type="submit" className="btn btn-primary" value="register"
                                     style={register_btn_styles}>Register
+                            </button>
+
+                            <button type="button" className="btn btn-primary" value="login"
+                                    style={login_btn_styles} onClick={this.onLoginClicked}
+                            >Login
                             </button>
                         </div>
                     </div>
