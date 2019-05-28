@@ -1,3 +1,7 @@
+h2, h3, h4, h5, h6 {
+    font-family: 'Akbaal', sans-serif;
+}
+
 .navbar {
     background: #00a65a;
     height: 40px;
@@ -148,6 +152,9 @@
 
 .navHomeButton:focus {
     outline: 0;
+}
+a:hover{
+    cursor: pointer;
 }
 
 

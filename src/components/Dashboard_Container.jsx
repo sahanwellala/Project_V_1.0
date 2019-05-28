@@ -18,6 +18,8 @@ import Create_Course_Container from "./Create_Course_Container";
 import axios from "axios";
 import Home_Container from "./Home_Container";
 import UserProfile_Container from "./UserProfile_Container";
+import Change_Pwd_Container from "./Change_Pwd_Container";
+import swal from "sweetalert";
 
 
 library.add(faStroopwafel);
@@ -39,6 +41,7 @@ export default class Dashboard_Container extends Component {
         this.onLogoutClicked = this.onLogoutClicked.bind(this);
         this.onHomeButtonCLicked = this.onHomeButtonCLicked.bind(this);
         this.onProfileClicked = this.onProfileClicked.bind(this);
+        this.onChangePwdClicked = this.onChangePwdClicked.bind(this);
         console.log(this.state.menuItem);
         console.log(this.state.accType);
     }
@@ -48,7 +51,7 @@ export default class Dashboard_Container extends Component {
     }
 
     handleToggleMenu() {
-        if (this.state.sidebarOpen == false) {
+        if (this.state.sidebarOpen === false) {
             this.setState({
                 sidebarOpen: true
             })
@@ -97,25 +100,40 @@ export default class Dashboard_Container extends Component {
 
     onProfileClicked() {
         this.setState({
-            menuItem: "profile"
-        })
+            menuItem: "profile",
+            isProfileDropDownMenuClicked: false
+        });
+        console.log(this.state.menuItem);
+    }
+
+    onChangePwdClicked() {
+        this.setState({
+            menuItem: "changePwd",
+            isProfileDropDownMenuClicked: false
+        });
         console.log(this.state.menuItem);
     }
 
     //Handle Log Out Function
     onLogoutClicked() {
         let token = {
-            token: localStorage.getItem('token')
+            token: localStorage.getItem('token'),
+            isProfileDropDownMenuClicked: false
         };
+
         axios.post('http://localhost:4000/users/log-out', token)
             .then((res) => {
                 console.log(res.data);
                 let data = res.data;
 
                 if (!data.success) {
-                    alert(data.message);
+                    swal("Oops!", data.message, "error")
+                        .then(() => {
+                        });
+                    //alert(data.message);
                 } else {
                     //Setting the logged details for identifying the user session
+                    let fName = localStorage.getItem('fName');
                     localStorage.removeItem('success');
                     localStorage.removeItem('userID');
                     localStorage.removeItem('fName');
@@ -123,8 +141,11 @@ export default class Dashboard_Container extends Component {
                     localStorage.removeItem('token');
                     localStorage.removeItem('isLogged');
 
-                    alert('Successfully Logged Out !');
-                    window.location.href = 'http://localhost:1234/';
+                    //alert('Successfully Logged Out !');
+                    swal("See you soon " + fName, "Successfully Logged Out !", "success").then(() => {
+                        window.location.href = 'http://localhost:1234/';
+                    })
+
                 }
 
             });
@@ -149,12 +170,14 @@ export default class Dashboard_Container extends Component {
                     return <Home_Container/>;
                 case "profile":
                     return <UserProfile_Container/>;
+                case "changePwd":
+                    return <Change_Pwd_Container/>;
                 default:
                     return <div className="main"><b>Loading ...</b></div>
             }
         };
         let adminFunctions = () => {
-            if (localStorage.getItem('accType').toString() === 'admin') {
+            if (localStorage.getItem('accType').toString() === 'Admin') {
                 return <div>
                     <button className="navMenuBtnList" onClick={this.onCreateMemberClick}>Create Member</button>
                     <button className="navMenuBtnList" onClick={this.onCourseClick}>Courses</button>
@@ -167,8 +190,9 @@ export default class Dashboard_Container extends Component {
             if (this.state.isProfileDropDownMenuClicked) {
                 return <div>
                     <div id="myDropdown" className="dropdown-content">
-                        <a href="#" onClick={this.onProfileClicked}>View Profile</a>
-                        <a href="#" onClick={this.onLogoutClicked}>Log Out</a>
+                        <a onClick={this.onProfileClicked}>View Profile</a>
+                        <a onClick={this.onChangePwdClicked}>Change Password</a>
+                        <a onClick={this.onLogoutClicked}>Log Out</a>
 
                     </div>
                 </div>

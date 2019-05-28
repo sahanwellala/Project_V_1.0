@@ -4,6 +4,8 @@ import * as ReactDOM from "react-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import axios from 'axios';
+import Alert from "react-bootstrap/Alert";
+import swal from "sweetalert";
 
 export default class UserProfile_Container extends Component {
     constructor(props) {
@@ -15,12 +17,11 @@ export default class UserProfile_Container extends Component {
         this.onTpChange = this.onTpChange.bind(this);
         this.onPwdChange = this.onPwdChange.bind(this);
         this.onConPwdChange = this.onConPwdChange.bind(this);
-        this.addInstructor = this.addInstructor.bind(this);
+        this.onUpdateProfileDetailsClicked = this.onUpdateProfileDetailsClicked.bind(this);
         this.onAdminSelected = this.onAdminSelected.bind(this);
         this.onInstructorSelected = this.onInstructorSelected.bind(this);
         this.checkEmailExists = this.checkEmailExists.bind(this);
         this.checkPasswordMatches = this.checkPasswordMatches.bind(this);
-        this.getUserData = this.getUserData.bind(this);
 
         this.state = {
             fName: '',
@@ -34,8 +35,7 @@ export default class UserProfile_Container extends Component {
             isEmailValid: true,
             isPwdMatched: true,
             userData: []
-        }
-        this.getUserData();
+        };
     }
 
     onfNameChange(e) {
@@ -131,32 +131,36 @@ export default class UserProfile_Container extends Component {
         }
     }
 
-    addInstructor(e) {
+    onUpdateProfileDetailsClicked(e) {
         e.preventDefault();
-        if (!this.state.isEmailValid) {
-            return;
-        }
-        const newAdmin = {
+        // if (!this.state.isEmailValid) {
+        //     return;
+        // }
+        const updateProfile = {
             fName: this.state.fName,
             lName: this.state.lName,
             email: this.state.email,
             address: this.state.address,
             tp: this.state.tp,
-            pwd: this.state.pwd,
-            conPwd: this.state.conPwd,
-            accType: this.state.accType
+            // pwd: this.state.pwd,
+            // conPwd: this.state.conPwd,
+            // accType: this.state.accType
         };
-        console.log(newAdmin);
+        console.log(updateProfile);
 
-        this.setState({
-            fName: '',
-            lName: '',
-            email: '',
-            address: '',
-            tp: '',
-            pwd: '',
-            conPwd: ''
-        })
+        axios.put('http://localhost:4000/users/create-admin-or-instructor', updateProfile).then(res => {
+            let updatedData = res.data;
+            this.setState({
+                fName: updatedData.fName,
+                lName: updatedData.lName,
+                address: updatedData.address,
+                tp: updatedData.tp,
+            })
+        }).then(() => {
+            swal("Great !", "Profile Details Successfully Updated !", "success").then(() => {
+            })
+            //alert("Profile Details Successfully Updated !");
+        });
     }
 
     componentDidMount() {
@@ -165,14 +169,19 @@ export default class UserProfile_Container extends Component {
             console.log(res.data);
             this.setState({
                 userData: res.data
+            });
+        }).then(() => {
+            console.log(this.state.userData);
+            this.setState({
+                fName: this.state.userData.fName,
+                lName: this.state.userData.lName,
+                email: this.state.userData.email,
+                address: this.state.userData.address,
+                tp: this.state.userData.tp
             })
-            console.log(this.state.resData);
         })
     }
 
-
-    getUserData() {
-    }
 
     render() {
         let emailValidity = () => {
@@ -190,9 +199,9 @@ export default class UserProfile_Container extends Component {
             }
         };
         return <div className="addAdminDiv" style={{marginTop: "40px"}}>
-            <center><h3>Profile Details of {localStorage.getItem('fName') + "'"}</h3></center>
+            <center><h5>Profile Details of {localStorage.getItem('fName') + "'"}</h5></center>
             <div className="form-group">
-                <form onSubmit={this.addInstructor}>
+                <form onSubmit={this.onUpdateProfileDetailsClicked}>
                     <div className="row">
                         <div className="col-sm-6">
                             <label>First Name: </label>
@@ -221,9 +230,8 @@ export default class UserProfile_Container extends Component {
                     <input type="text"
                            className="form-control"
                            value={this.state.email}
-                           onChange={this.onEmailChange}
                            required="required"
-                           onBlur={this.checkEmailExists}
+                           readOnly={true}
                            pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
                            title="Please Enter a Email Address"
 
@@ -245,36 +253,36 @@ export default class UserProfile_Container extends Component {
                            pattern="\d{10}"
                            title="Please Enter a Valid Phone number Eg - 0771234567"
                     />
-                    <label>Password: </label>
-                    <input type="password"
-                           className="form-control"
-                           value={this.state.pwd}
-                           onChange={this.onPwdChange}
-                           required="required"
-                    />
-                    <label>Confirm Password: {passwordMatch()}</label>
-                    <input type="password"
-                           className="form-control"
-                           value={this.state.conPwd}
-                           onChange={this.onConPwdChange}
-                           required="required"
-                           onBlur={this.checkPasswordMatches}
-                    />
+                    {/*<label>Password: </label>*/}
+                    {/*<input type="password"*/}
+                    {/*       className="form-control"*/}
+                    {/*       value={this.state.pwd}*/}
+                    {/*       onChange={this.onPwdChange}*/}
+                    {/*       required="required"*/}
+                    {/*/>*/}
+                    {/*<label>Confirm Password: {passwordMatch()}</label>*/}
+                    {/*<input type="password"*/}
+                    {/*       className="form-control"*/}
+                    {/*       value={this.state.conPwd}*/}
+                    {/*       onChange={this.onConPwdChange}*/}
+                    {/*       required="required"*/}
+                    {/*       onBlur={this.checkPasswordMatches}*/}
+                    {/*/>*/}
 
-                    <label className="radio-inline">
-                        <input type="radio" name="accType" value="Admin" onChange={this.onAdminSelected}
-                               style={{marginTop: "15px"}}
-                               checked={this.state.accType === 'Admin'}/>Admin
-                    </label>
-                    <label>
-                        <input type="radio" name="accType" value="Instructor" onChange={this.onInstructorSelected}
-                               style={{marginLeft: "20px", marginTop: "15px"}}
-                               checked={this.state.accType === 'Instructor'}/>Instructor
-                    </label>
+                    {/*<label className="radio-inline">*/}
+                    {/*    <input type="radio" name="accType" value="Admin" onChange={this.onAdminSelected}*/}
+                    {/*           style={{marginTop: "15px"}}*/}
+                    {/*           checked={this.state.accType === 'Admin'}/>Admin*/}
+                    {/*</label>*/}
+                    {/*<label>*/}
+                    {/*    <input type="radio" name="accType" value="Instructor" onChange={this.onInstructorSelected}*/}
+                    {/*           style={{marginLeft: "20px", marginTop: "15px"}}*/}
+                    {/*           checked={this.state.accType === 'Instructor'}/>Instructor*/}
+                    {/*</label>*/}
 
                     <div>
                         <button type="submit" className="btn btn-primary" value="register"
-                                style={{marginTop: "10px"}}>Create Member
+                                style={{marginTop: "10px"}}>Update My Details
                         </button>
                     </div>
                 </form>

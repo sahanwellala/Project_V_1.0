@@ -6,7 +6,10 @@ import {Link} from 'react-router-dom';
 import axios from 'axios';
 import ls from 'local-storage'
 
+import swal from 'sweetalert';
+
 import {Redirect} from "react-router";
+
 
 //Inline style variables used
 let login_style = {
@@ -36,7 +39,6 @@ export default class Login_Container extends Component {
 
     constructor(props) {
         super(props);
-
         this.onChangeUserName = this.onChangeUserName.bind(this);
         this.onChangePwd = this.onChangePwd.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
@@ -48,6 +50,7 @@ export default class Login_Container extends Component {
                 success: false,
                 message: '',
                 userID: '',
+                email: '',
                 fName: '',
                 accType: '',
                 token: '',
@@ -90,6 +93,7 @@ export default class Login_Container extends Component {
                         success: data.success,
                         message: data.message,
                         userID: data.userID,
+                        email: data.email,
                         fName: data.fName,
                         accType: data.accType,
                         token: data.token,
@@ -98,20 +102,25 @@ export default class Login_Container extends Component {
                 });
                 console.log('state variable data : ' + this.state.resData.success + this.state.resData.accType);
                 if (!data.success) {
+                    //alert('Invalid Username or Password !');
+                    swal("Oops!", "Username or Password Invalid!", "error")
+                        .then(() => {
+                            window.location.href = 'http://localhost:1234/';
+                        });
 
-                    alert('Invalid Username or Password !');
-                    window.location.href = 'http://localhost:1234/';
                 } else {
                     //Setting the logged details for identifying the user session
                     localStorage.setItem('success', data.success);
                     localStorage.setItem('userID', data.userID);
+                    localStorage.setItem('email', data.email);
                     localStorage.setItem('fName', data.fName);
                     localStorage.setItem('accType', data.accType);
                     localStorage.setItem('token', data.token);
                     localStorage.setItem('isLogged', data.isLogged);
-
-                    alert('Logged Successfully !');
-                    window.location.href = 'http://localhost:1234/home';
+                    //alert('Logged Successfully !');
+                    swal("Welcome " + localStorage.getItem('fName'), "Logging Successful !", "success").then(() => {
+                        window.location.href = 'http://localhost:1234/home';
+                    })
                 }
 
             });

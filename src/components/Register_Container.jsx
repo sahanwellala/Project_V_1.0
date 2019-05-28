@@ -4,6 +4,7 @@ import '../../css/register_page.css';
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from 'axios';
 import {Redirect} from "react-router-dom";
+import swal from "sweetalert";
 //Inline style variables used
 let register_style = {
     width: '300px',
@@ -69,8 +70,10 @@ export default class Register_Container extends Component {
         axios.post('http://localhost:4000/users/create-user', newUser)
             .then(res => {
                 console.log(res);
-                alert("Successfully Registered ! Please Log Into Continue");
-                window.location.href = "http://localhost:1234";
+                //alert("Successfully Registered ! Please Log Into Continue");
+                swal("Almost there!", "Please log in to continue !", "success").then(() => {
+                    window.location.href = "http://localhost:1234";
+                })
 
             });
 
