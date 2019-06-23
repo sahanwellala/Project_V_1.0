@@ -15,13 +15,13 @@ export default class UserProfile_Container extends Component {
         this.onEmailChange = this.onEmailChange.bind(this);
         this.onAddressChange = this.onAddressChange.bind(this);
         this.onTpChange = this.onTpChange.bind(this);
-        this.onPwdChange = this.onPwdChange.bind(this);
-        this.onConPwdChange = this.onConPwdChange.bind(this);
+        // this.onPwdChange = this.onPwdChange.bind(this);
+        // this.onConPwdChange = this.onConPwdChange.bind(this);
         this.onUpdateProfileDetailsClicked = this.onUpdateProfileDetailsClicked.bind(this);
         this.onAdminSelected = this.onAdminSelected.bind(this);
         this.onInstructorSelected = this.onInstructorSelected.bind(this);
         this.checkEmailExists = this.checkEmailExists.bind(this);
-        this.checkPasswordMatches = this.checkPasswordMatches.bind(this);
+        //this.checkPasswordMatches = this.checkPasswordMatches.bind(this);
 
         this.state = {
             fName: '',
@@ -29,8 +29,8 @@ export default class UserProfile_Container extends Component {
             email: '',
             address: '',
             tp: '',
-            pwd: '',
-            conPwd: '',
+            // pwd: '',
+            // conPwd: '',
             accType: 'Admin',
             isEmailValid: true,
             isPwdMatched: true,
@@ -68,17 +68,17 @@ export default class UserProfile_Container extends Component {
         });
     }
 
-    onPwdChange(e) {
-        this.setState({
-            pwd: e.target.value
-        });
-    }
-
-    onConPwdChange(e) {
-        this.setState({
-            conPwd: e.target.value
-        })
-    }
+    // onPwdChange(e) {
+    //     this.setState({
+    //         pwd: e.target.value
+    //     });
+    // }
+    //
+    // onConPwdChange(e) {
+    //     this.setState({
+    //         conPwd: e.target.value
+    //     })
+    // }
 
     onAdminSelected(e) {
         this.setState({
@@ -117,19 +117,19 @@ export default class UserProfile_Container extends Component {
     }
 
     //Validating the Passwords
-    checkPasswordMatches() {
-        let pwd = this.state.pwd;
-        let conPwd = this.state.conPwd;
-        if (pwd === conPwd) {
-            this.setState({
-                isPwdMatched: true
-            })
-        } else {
-            this.setState({
-                isPwdMatched: false
-            })
-        }
-    }
+    // checkPasswordMatches() {
+    //     let pwd = this.state.pwd;
+    //     let conPwd = this.state.conPwd;
+    //     if (pwd === conPwd) {
+    //         this.setState({
+    //             isPwdMatched: true
+    //         })
+    //     } else {
+    //         this.setState({
+    //             isPwdMatched: false
+    //         })
+    //     }
+    // }
 
     onUpdateProfileDetailsClicked(e) {
         e.preventDefault();
@@ -148,8 +148,8 @@ export default class UserProfile_Container extends Component {
         };
         console.log(updateProfile);
 
-        axios.put('http://localhost:4000/users/create-admin-or-instructor', updateProfile).then(res => {
-            let updatedData = res.data;
+        axios.put('http://localhost:4000/users/update/profile', updateProfile).then(res => {
+            let updatedData = res.data.updated;
             this.setState({
                 fName: updatedData.fName,
                 lName: updatedData.lName,
@@ -158,8 +158,8 @@ export default class UserProfile_Container extends Component {
             })
         }).then(() => {
             swal("Great !", "Profile Details Successfully Updated !", "success").then(() => {
+
             })
-            //alert("Profile Details Successfully Updated !");
         });
     }
 
@@ -191,13 +191,13 @@ export default class UserProfile_Container extends Component {
                 return null
             }
         };
-        let passwordMatch = () => {
-            if (!this.state.isPwdMatched) {
-                return <p style={{color: "red"}}>Passwords didn't match !</p>
-            } else {
-                return null;
-            }
-        };
+        // let passwordMatch = () => {
+        //     if (!this.state.isPwdMatched) {
+        //         return <p style={{color: "red"}}>Passwords didn't match !</p>
+        //     } else {
+        //         return null;
+        //     }
+        // };
         return <div className="addAdminDiv" style={{marginTop: "40px"}}>
             <center><h5>Profile Details of {localStorage.getItem('fName') + "'"}</h5></center>
             <div className="form-group">

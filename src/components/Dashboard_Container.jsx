@@ -20,6 +20,7 @@ import Home_Container from "./Home_Container";
 import UserProfile_Container from "./UserProfile_Container";
 import Change_Pwd_Container from "./Change_Pwd_Container";
 import swal from "sweetalert";
+import MyCourses from "./MyCourses";
 
 
 library.add(faStroopwafel);
@@ -36,6 +37,7 @@ export default class Dashboard_Container extends Component {
 
         this.onCreateMemberClick = this.onCreateMemberClick.bind(this);
         this.onCourseClick = this.onCourseClick.bind(this);
+        this.onMyCoursesClicked = this.onMyCoursesClicked.bind(this);
         this.handleToggleMenu = this.handleToggleMenu.bind(this);
         this.onProfileDropDownMenuClicked = this.onProfileDropDownMenuClicked.bind(this);
         this.onLogoutClicked = this.onLogoutClicked.bind(this);
@@ -72,6 +74,12 @@ export default class Dashboard_Container extends Component {
     onCourseClick() {
         this.setState({
             menuItem: "course"
+        })
+    }
+
+    onMyCoursesClicked() {
+        this.setState({
+            menuItem: "myCourses"
         })
     }
 
@@ -166,6 +174,8 @@ export default class Dashboard_Container extends Component {
                     return <Create_AdminOrInstructors_Container/>;
                 case "course":
                     return <Create_Course_Container/>;
+                case "myCourses":
+                    return <MyCourses/>;
                 case "home":
                     return <Home_Container/>;
                 case "profile":
@@ -176,11 +186,21 @@ export default class Dashboard_Container extends Component {
                     return <div className="main"><b>Loading ...</b></div>
             }
         };
+
+        let studentFunctions = () => {
+            if (localStorage.getItem('accType').toString() === 'Student') {
+                return <div>
+                    <button className="navMenuBtnList" onClick={this.onMyCoursesClicked}>My Courses</button>
+                </div>
+            } else {
+                return null;
+            }
+        }
         let adminFunctions = () => {
             if (localStorage.getItem('accType').toString() === 'Admin') {
                 return <div>
-                    <button className="navMenuBtnList" onClick={this.onCreateMemberClick}>Create Member</button>
-                    <button className="navMenuBtnList" onClick={this.onCourseClick}>Courses</button>
+                    <button className="navMenuBtnList" onClick={this.onCreateMemberClick}>User Management</button>
+                    <button className="navMenuBtnList" onClick={this.onCourseClick}>Course Management</button>
                 </div>
             } else {
                 return null;
@@ -245,6 +265,7 @@ export default class Dashboard_Container extends Component {
 
                         <br/>
                         {adminFunctions()}
+                        {studentFunctions()}
                         <button className="navMenuBtnList">Assignments</button>
                         <button className="navMenuBtnList">Projects</button>
                     </div>}

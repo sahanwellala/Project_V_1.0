@@ -19,8 +19,10 @@ export default class Create_AdminOrInstructors_Container extends Component {
         this.onConPwdChange = this.onConPwdChange.bind(this);
         this.addInstructor = this.addInstructor.bind(this);
         this.updateMember = this.updateMember.bind(this);
+        this.deleteMember = this.deleteMember.bind(this);
         this.onAdminSelected = this.onAdminSelected.bind(this);
         this.onInstructorSelected = this.onInstructorSelected.bind(this);
+        this.onStudentSelected = this.onStudentSelected.bind(this);
         this.checkEmailExists = this.checkEmailExists.bind(this);
         this.checkPasswordMatches = this.checkPasswordMatches.bind(this);
         this.sendEmail = this.sendEmail.bind(this);
@@ -29,6 +31,7 @@ export default class Create_AdminOrInstructors_Container extends Component {
         this.onAddMemberSelected = this.onAddMemberSelected.bind(this);
         this.onEditDeleteSelected = this.onEditDeleteSelected.bind(this);
         this.onPwdChangeNavSelected = this.onPwdChangeNavSelected.bind(this);
+        this.onITNumberChange = this.onITNumberChange.bind(this);
         this.onSearchValueChange = this.onSearchValueChange.bind(this);
 
         this.onNeedToChangePwd = this.onNeedToChangePwd.bind(this);
@@ -45,6 +48,7 @@ export default class Create_AdminOrInstructors_Container extends Component {
             pwd: '',
             conPwd: '',
             accType: 'Admin',
+            ITNum: '',
             isEmailValid: true,
             isPwdMatched: true,
             operation: 'add',
@@ -103,6 +107,12 @@ export default class Create_AdminOrInstructors_Container extends Component {
     }
 
     onInstructorSelected(e) {
+        this.setState({
+            accType: e.target.value
+        })
+    }
+
+    onStudentSelected(e) {
         this.setState({
             accType: e.target.value
         })
@@ -205,6 +215,12 @@ export default class Create_AdminOrInstructors_Container extends Component {
         })
     }
 
+    onITNumberChange(e) {
+        this.setState({
+            ITNum: e.target.value
+        })
+    }
+
     onSearchClicked(e) {
         let searchMail = this.state.search;
         if (searchMail == null) {
@@ -226,7 +242,8 @@ export default class Create_AdminOrInstructors_Container extends Component {
                                 address: user.address,
                                 tp: user.tp,
                                 accType: user.accType,
-                                noSearchResults: false
+                                noSearchResults: false,
+                                ITNum: user.ITNum
                             })
                         } else {
                             this.setState({
@@ -252,7 +269,8 @@ export default class Create_AdminOrInstructors_Container extends Component {
             isEmailValid: true,
             isPwdMatched: true,
             search: '',
-            noSearchResults: false
+            noSearchResults: false,
+            ITNum: ''
         })
     }
 
@@ -260,24 +278,25 @@ export default class Create_AdminOrInstructors_Container extends Component {
         if (!this.state.isEmailValid) {
             return;
         }
-        const newAdmin = {
+        const newMember = {
             fName: this.state.fName,
             lName: this.state.lName,
             email: this.state.email,
             address: this.state.address,
             tp: this.state.tp,
             pwd: this.state.pwd,
-            accType: this.state.accType
+            accType: this.state.accType,
+            ITNum: this.state.ITNum
         };
-        console.log(newAdmin);
+        console.log(newMember);
 
-        axios.post('http://localhost:4000/users/create-admin-or-instructor', newAdmin)
+        axios.post('http://localhost:4000/users/create-member', newMember)
             .then(res => {
                 console.log(res);
                 if (res.data.success === true) {
-                    swal("Great !", 'Successfully Created an ' + newAdmin.accType, "success").then(() => {
-                        let fName = newAdmin.fName;
-                        //this.sendEmail(newAdmin.email, "Congratulations " + fName, fName, localStorage.getItem('fName'), newAdmin.accType);
+                    swal("Great !", 'Successfully Created an ' + newMember.accType, "success").then(() => {
+                        let fName = newMember.fName;
+                        //this.sendEmail(newMember.email, "Congratulations " + fName, fName, localStorage.getItem('fName'), newMember.accType);
                     });
                 }
                 //alert("Successfully Created an " + newAdmin.accType);
@@ -311,7 +330,7 @@ export default class Create_AdminOrInstructors_Container extends Component {
                 }
             }
 
-            axios.put('http://localhost:4000/users/update-admin-or-instructor', updatedMember).then(res => {
+            axios.put('http://localhost:4000/users/update-member', updatedMember).then(res => {
                 if (res.data.success === true) {
                     swal("Great !", "Successfully Updated Member Details !", "success").then(() => {
                         let data = res.data.updated;
@@ -324,12 +343,35 @@ export default class Create_AdminOrInstructors_Container extends Component {
                                 address: data.address,
                                 tp: data.tp,
                                 accType: data.accType,
+                                ITNum: data.ITNum,
                                 noSearchResults: false
+
                             })
                         }
                     })
                 }
             })
+        }
+    }
+
+    deleteMember() {
+        if (this.state.email !== '' && this.state.email != null && typeof this.state.email !== 'undefined') {
+            let email = this.state.email;
+
+            console.log(email);
+            axios.delete('http://localhost:4000/users/delete/' + email).then((res) => {
+                console.log(res);
+                if (res.data.success == true) {
+                    swal("Great !", "Successfully Deleted Member Details !", "success").then(() => {
+                        this.clearFields();
+                    })
+                }
+            })
+        } else {
+            swal("Cannot Delete!", "Please Select a user to Delete ! ", "error")
+                .then(() => {
+
+                });
         }
     }
 
@@ -340,7 +382,6 @@ export default class Create_AdminOrInstructors_Container extends Component {
         } else if (this.state.operation === 'edit') {
             this.updateMember();
         }
-
     }
 
     render() {
@@ -363,7 +404,7 @@ export default class Create_AdminOrInstructors_Container extends Component {
 
         let ifNoAnySearchResults = () => {
             if (this.state.noSearchResults) {
-                return <p style={{color: "red"}}>Sorry ! there is no user with that Email.</p>
+                return <p style={{color: "red"}}>Sorry ! there is no user with this Email.</p>
             }
         };
         let searchBar = () => {
@@ -390,7 +431,11 @@ export default class Create_AdminOrInstructors_Container extends Component {
             } else if (this.state.operation === 'edit') {
                 return <div>
                     <button type="submit" className="btn btn-primary" value="Update"
-                            style={{marginTop: "10px"}}>Update Member
+                            style={{marginTop: "10px", marginRight: "10px"}}>Update Member
+                    </button>
+
+                    <button type="button" className="btn btn-primary" value="Delete"
+                            style={{marginTop: "10px"}} onClick={this.deleteMember}>Delete Member
                     </button>
                 </div>
             } else {
@@ -514,11 +559,29 @@ export default class Create_AdminOrInstructors_Container extends Component {
                                        checked={this.state.accType === 'Instructor'}/>Instructor
                             </label>
 
+                            <label>
+                                <input type="radio" name="accType" value="Student"
+                                       onChange={this.onStudentSelected}
+                                       style={{marginLeft: "20px", marginTop: "15px"}}
+                                       checked={this.state.accType === 'Student'}/>Student
+                            </label>
+
+                            {studentIDInput()}
                             <div>
                                 {functionButton()}
                             </div>
                         </form>
                     </div>
+                </div>
+            }
+        };
+        let studentIDInput = () => {
+            if (this.state.accType === 'Student') {
+                return <div>
+                    <label>IT Number: </label>
+                    <input type="text" className="form-control" value={this.state.ITNum}
+                           onChange={this.onITNumberChange}
+                           readOnly={this.state.operation === 'edit'}/>
                 </div>
             }
         };
@@ -534,15 +597,10 @@ export default class Create_AdminOrInstructors_Container extends Component {
                     <Nav.Link eventKey="update" onClick={this.onEditDeleteSelected}>Edit / Delete
                         Member</Nav.Link>
                 </Nav.Item>
-                {/*<Nav.Item>*/}
-                {/*    <Nav.Link eventKey="disabled" disabled>*/}
-                {/*    </Nav.Link>*/}
-                {/*</Nav.Item>*/}
             </Nav>
             <br/>
             {searchBar()}
             {userManagementMain()}
-
         </div>
     }
 }

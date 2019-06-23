@@ -9,6 +9,7 @@
   "author": "sahan",
   "license": "ISC",
   "devDependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.4.4",
     "install": "^0.12.2",
     "npm": "^6.9.0",
     "parcel-bundler": "^1.12.3",
@@ -22,6 +23,7 @@
     "@fortawesome/react-fontawesome": "^0.1.4",
     "@types/react-sidebar": "^3.0.0",
     "axios": "^0.18.0",
+    "axios-cancel": "^0.2.2",
     "bootstrap": "^4.3.1",
     "local-storage": "^2.0.0",
     "react-alert-template-basic": "^1.0.0",
