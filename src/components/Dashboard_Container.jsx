@@ -19,6 +19,12 @@ import axios from "axios";
 import Home_Container from "./Home_Container";
 import UserProfile_Container from "./UserProfile_Container";
 import Change_Pwd_Container from "./Change_Pwd_Container";
+import AssignmentListcomponent from "./Dishan/Assignment-List.component";
+import ExamListcomponent from "./Dishan/Exam-List.component";
+import AssignmentListViewcomponent from "./Dishan/Assignment-List-View.component";
+import ExamListViewcomponent from "./Dishan/Exam-List-View.component";
+import AssignmentMarkcomponent from "./Dishan/Student-Assignment-Marks.component";
+import ExamMarkcomponent from "./Dishan/Student-Exam-Marks.component";
 import swal from "sweetalert";
 import MyCourses from "./MyCourses";
 
@@ -31,7 +37,7 @@ export default class Dashboard_Container extends Component {
             sidebarOpen: false,
             menuItem: "home",
             accType: localStorage.getItem('accType'),
-            isProfileDropDownMenuClicked: false
+            isProfileDropDownMenuClicked: false,
         };
         this.onSetSidebarOpen = this.onSetSidebarOpen.bind(this);
 
@@ -44,6 +50,12 @@ export default class Dashboard_Container extends Component {
         this.onHomeButtonCLicked = this.onHomeButtonCLicked.bind(this);
         this.onProfileClicked = this.onProfileClicked.bind(this);
         this.onChangePwdClicked = this.onChangePwdClicked.bind(this);
+        this.onAssignmentClick = this.onAssignmentClick.bind(this);
+        this.onAssignmentViewClick = this.onAssignmentViewClick.bind(this);
+        this.onExamClick = this.onExamClick.bind(this);
+        this.onExamViewClick = this.onExamViewClick.bind(this);
+        this.onAssignmentMarkClick = this.onAssignmentMarkClick.bind(this);
+        this.onExamMarkClick = this.onExamMarkClick.bind(this);
         console.log(this.state.menuItem);
         console.log(this.state.accType);
     }
@@ -122,6 +134,41 @@ export default class Dashboard_Container extends Component {
         console.log(this.state.menuItem);
     }
 
+    onAssignmentClick() {
+        this.setState({
+            menuItem: "assignment"
+        })
+    }
+
+    onAssignmentViewClick() {
+        this.setState({
+            menuItem: "assignmentView"
+        })
+    }
+
+    onExamClick() {
+        this.setState({
+            menuItem: "exam"
+        })
+    }
+
+    onExamViewClick() {
+        this.setState({
+            menuItem: "examView"
+        })
+    }
+
+    onAssignmentMarkClick() {
+        this.setState({
+            menuItem: "assignmentMark"
+        })
+    }
+
+    onExamMarkClick() {
+        this.setState({
+            menuItem: "examMark"
+        })
+    }
     //Handle Log Out Function
     onLogoutClicked() {
         let token = {
@@ -165,7 +212,6 @@ export default class Dashboard_Container extends Component {
         })
     }
 
-
     render() {
 
         let menuContent = () => {
@@ -182,6 +228,18 @@ export default class Dashboard_Container extends Component {
                     return <UserProfile_Container/>;
                 case "changePwd":
                     return <Change_Pwd_Container/>;
+                case "assignment":
+                    return <AssignmentListcomponent/>;
+                case "assignmentView":
+                    return <AssignmentListViewcomponent/>;
+                case "exam":
+                    return <ExamListcomponent/>;
+                case "examView":
+                    return <ExamListViewcomponent/>;
+                case "assignmentMark":
+                    return <AssignmentMarkcomponent/>;
+                case "examMark":
+                    return <ExamMarkcomponent/>;
                 default:
                     return <div className="main"><b>Loading ...</b></div>
             }
@@ -191,16 +249,22 @@ export default class Dashboard_Container extends Component {
             if (localStorage.getItem('accType').toString() === 'Student') {
                 return <div>
                     <button className="navMenuBtnList" onClick={this.onMyCoursesClicked}>My Courses</button>
+                    <button className="navMenuBtnList" onClick={this.onAssignmentViewClick}>Assignments</button>
+                    <button className="navMenuBtnList" onClick={this.onExamViewClick}>Exams</button>
+                    <button className="navMenuBtnList" onClick={this.onAssignmentMarkClick}>Assignment Marks</button>
+                    <button className="navMenuBtnList" onClick={this.onExamMarkClick}>Exam Marks</button>
                 </div>
             } else {
                 return null;
             }
-        }
+        };
         let adminFunctions = () => {
             if (localStorage.getItem('accType').toString() === 'Admin') {
                 return <div>
                     <button className="navMenuBtnList" onClick={this.onCreateMemberClick}>User Management</button>
                     <button className="navMenuBtnList" onClick={this.onCourseClick}>Course Management</button>
+                    <button className="navMenuBtnList" onClick={this.onAssignmentClick}>Assignments</button>
+                    <button className="navMenuBtnList" onClick={this.onExamClick}>Exams</button>
                 </div>
             } else {
                 return null;
@@ -266,8 +330,6 @@ export default class Dashboard_Container extends Component {
                         <br/>
                         {adminFunctions()}
                         {studentFunctions()}
-                        <button className="navMenuBtnList">Assignments</button>
-                        <button className="navMenuBtnList">Projects</button>
                     </div>}
                 open={this.state.sidebarOpen}
                 onSetOpen={this.onSetSidebarOpen}

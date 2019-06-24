@@ -12,8 +12,59 @@ export default class Home_Container extends Component {
         this.state = {
             heading: '',
             notices: [],
+            assignmentNotification:[],
+            examNotification:[],
+            examMarkNotification:[],
+            assignmentMarkNotification:[]
         };
         this.handleApprove = this.handleApprove.bind(this);
+    }
+
+    componentDidMount() {
+        axios.get('http://localhost:4000/assignments/')
+            .then(response=>{
+                this.setState({assignmentNotification: response.data})
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+
+        axios.get('http://localhost:4000/exam/')
+            .then(response=>{
+                this.setState({examNotification: response.data})
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+
+        axios.get('http://localhost:4000/examUpload/')
+            .then(response=>{
+                this.setState({examMarkNotification: response.data})
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+
+        axios.get('http://localhost:4000/assignmentUpload/')
+            .then(response=>{
+                this.setState({assignmentMarkNotification: response.data})
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+
+        axios.get('http://localhost:4000/notices/' + localStorage.getItem("userID")).then(res => {
+            console.log(res.data);
+            this.setState({
+                notices: res.data.data
+            });
+
+            console.log(this.state.notices)
+        });
+        if (localStorage.getItem('accType').toString() === 'Student') {
+            {this.examAssignmentNotifier()}
+        }
+
     }
 
     handleApprove(id) {
@@ -29,15 +80,24 @@ export default class Home_Container extends Component {
         })
     }
 
-    componentDidMount() {
-        axios.get('http://localhost:4000/notices/' + localStorage.getItem("userID")).then(res => {
-            console.log(res.data);
-            this.setState({
-                notices: res.data.data
-            });
-
-            console.log(this.state.notices)
-        })
+    examAssignmentNotifier(){
+        if((this.state.assignmentNotification)!==null){
+            alert("Assignments available....")
+        }
+        if((this.state.examNotification)!==null){
+            alert("Exams available....")
+        }
+        this.state.examMarkNotification.map(function(currentExamMark){
+            if(currentExamMark.exam_marks!==null){
+                alert("Exam marks available....")
+            }
+        });
+        if((this.state.examMarkNotification.mark!==null)||(this.state.examMarkNotification.mark !==undefined)){
+            alert("Exam marks available....")
+        }
+        if((this.state.assignmentMarkNotification.mark!==null)||(this.state.assignmentMarkNotification.mark !== undefined)){
+            alert("Assignment marks available....")
+        }
     }
 
     render() {
@@ -85,8 +145,6 @@ export default class Home_Container extends Component {
                             </div>
                         })
                     }
-
-
                 </Card.Body>
             </Card>
         </div>
