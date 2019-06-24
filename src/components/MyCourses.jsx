@@ -53,7 +53,7 @@ export default class MyCourses extends Component {
         let url = 'http://localhost:4000/users/courses/unenroll/' + localStorage.getItem("userID");
         let courses = {
             courses: courseId
-        }
+        };
         axios.put(url, courses).then((res) => {
             swal("Success ! ", "You have Successfully Un Enrolled from the Course !", "success").then(() => {
                 window.location.href = 'http://localhost:1234/home';

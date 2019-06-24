@@ -296,7 +296,7 @@ export default class Create_AdminOrInstructors_Container extends Component {
                 if (res.data.success === true) {
                     swal("Great !", 'Successfully Created an ' + newMember.accType, "success").then(() => {
                         let fName = newMember.fName;
-                        //this.sendEmail(newMember.email, "Congratulations " + fName, fName, localStorage.getItem('fName'), newMember.accType);
+                        this.sendEmail(newMember.email, "Congratulations " + fName, fName, localStorage.getItem('fName'), newMember.accType);
                     });
                 }
                 //alert("Successfully Created an " + newAdmin.accType);

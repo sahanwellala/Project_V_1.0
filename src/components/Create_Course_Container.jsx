@@ -201,6 +201,7 @@ export default class Create_Course_Container extends Component {
             })
             .catch(err => console.log(err))
 
+        console.log(this.state.allCourses)
 
     }
 
@@ -319,9 +320,10 @@ export default class Create_Course_Container extends Component {
                                             <li className="list-group-item"><b>Name: </b> {course.name}</li>
                                             <li className="list-group-item"><b>Description: </b>{course.description}
                                             </li>
-                                            <li className="list-group-item">
-                                                <b>Instructor: </b>{course.instructor.fName + ' ' + course.instructor.lName}
-                                            </li>
+                                            {/*<li className="list-group-item">*/}
+                                            {/*    <b>Instructor: </b>{course.instructor.fName + ' ' + course.instructor.lName}*/}
+                                            {/*</li>*/}
+                                            {/*{console.log(course.instructor.fName + ' ' + course.instructor.lName)}*/}
                                             <li className="list-group-item"><b>Status: </b> {course.status}</li>
                                         </ul>
                                     </Card.Body>
